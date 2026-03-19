@@ -141,7 +141,7 @@ namespace BTC
         }
         if (!prev.isEmpty()) {
             const auto prevHdr = Deserialize<bitcoin::CBlockHeader>(prev);
-            // GetHash() dispatches on currency unit (RIN -> RinHash, others -> SHA256d).
+            // GetHash() dispatches on currency unit (YTN -> RinHash, others -> SHA256d).
             // The unit is always set correctly before HeaderVerifier is called.
             if (prevHdr.GetHash() != curHdr.hashPrevBlock) {
                 if (err) *err = QString("Header %1 'hashPrevBlock' does not match the contents of the previous block").arg(height);
@@ -194,14 +194,14 @@ namespace BTC
         return nameNetMap.value(name, Net::Invalid /* default if not found */);
     }
 
-    namespace { const QString coinNameBCH{"BCH"}, coinNameBTC{"BTC"}, coinNameLTC{"LTC"}, coinNameRIN{"RIN"}; }
+    namespace { const QString coinNameBCH{"BCH"}, coinNameBTC{"BTC"}, coinNameLTC{"LTC"}, coinNameRIN{"YTN"}; }
     QString coinToName(Coin c) {
         QString ret; // for NRVO
         switch (c) {
         case Coin::BCH: ret = coinNameBCH; break;
         case Coin::BTC: ret = coinNameBTC; break;
         case Coin::LTC: ret = coinNameLTC; break;
-        case Coin::RIN: ret = coinNameRIN; break;
+        case Coin::YTN: ret = coinNameRIN; break;
         case Coin::Unknown: break;
         }
         return ret;
@@ -210,7 +210,7 @@ namespace BTC
         if (s == coinNameBCH) return Coin::BCH;
         if (s == coinNameBTC) return Coin::BTC;
         if (s == coinNameLTC) return Coin::LTC;
-        if (s == coinNameRIN) return Coin::RIN;
+        if (s == coinNameRIN) return Coin::YTN;
         return Coin::Unknown;
     }
 
@@ -281,8 +281,8 @@ namespace {
     auto t1 = App::registerTest("btcmisc", test);
 
     // ---- RinHash block header hash test vectors --------------------------------
-    // Vectors derived from the live Rincoin mainnet chain, cross-checked against
-    // Fulcrum-RIN server.features and blockchain.block.headers responses.
+    // Vectors derived from the live Yenten mainnet chain, cross-checked against
+    // Fulcrum-YTN server.features and blockchain.block.headers responses.
     //
     // The HeaderHash() helper is used here — it wraps the full
     //   BTC::Hash2ByteArrayRev(BTC::Deserialize<CBlockHeader>(hdr).GetHash())
@@ -291,14 +291,14 @@ namespace {
     {
         using Util::ParseHexFast;
 
-        // GetHash() dispatches on GetCurrencyUnit(); set it to "RIN" for the
+        // GetHash() dispatches on GetCurrencyUnit(); set it to "YTN" for the
         // duration of this test so CBlockHeader::GetHash() calls RinHash().
         const auto savedUnit = bitcoin::GetCurrencyUnit();
         const struct CurrGuard {
             const std::string &saved;
             ~CurrGuard() { bitcoin::SetCurrencyUnit(saved); }
         } guard{savedUnit};
-        bitcoin::SetCurrencyUnit("RIN");
+        bitcoin::SetCurrencyUnit("YTN");
 
         // ---- Block 0 (genesis) --------------------------------------------------
         // Raw 80-byte header from blockchain.block.header(0)

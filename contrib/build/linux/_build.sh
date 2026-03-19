@@ -13,7 +13,7 @@ PACKAGE="$1"
 ROCKSDB_PACKAGE="$2"
 JEMALLOC_PACKAGE="$3"
 MINIUPNPC_PACKAGE="$4"
-TARGET_BINARY=fulcrum-rin
+TARGET_BINARY=fulcrum-ytn
 
 top=/work
 cd "$top" || fail "Could not cd $top"
@@ -136,7 +136,7 @@ else
 fi
 qmake ../Fulcrum.pro "CONFIG-=debug" \
                      "CONFIG+=release" \
-                     "TARGET=fulcrum-rin" \
+                     "TARGET=fulcrum-ytn" \
                      "${extra_libs}" \
                      "LIBS+=-L${ROCKSDB_LIBDIR} -lrocksdb" \
                      "LIBS+=-lz -lbz2" \

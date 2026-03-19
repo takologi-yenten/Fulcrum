@@ -232,8 +232,8 @@ namespace {
             isCore = subversion.startsWith("/Satoshi:"); // this matches Bitcoin Knots as well
             isBU = subversion.startsWith("/BCH Unlimited:");
             isBCHN = subversion.startsWith("/Bitcoin Cash Node:");
-            isRIN = subversion.startsWith("/RincoinCore:");
-            isLTC = subversion.startsWith("/LitecoinCore:"); // do NOT include isRIN here; Rincoin is tracked independently
+            isRIN = subversion.startsWith("/YentenCore:");
+            isLTC = subversion.startsWith("/LitecoinCore:"); // do NOT include isRIN here; Yenten is tracked independently
             isFlowee = subversion.startsWith("/Flowee:");
             // regular bitcoind, "version" is reliable and always the same format
             version = Version::BitcoinDCompact(val);
@@ -334,8 +334,8 @@ void BitcoinDMgr::refreshBitcoinDNetworkInfo()
                 // Bitcoin Core / Bitcoin Knots: SHA256d, segwit enabled
                 coin = BTC::Coin::BTC;
             } else if (res.isRIN) {
-                // Rincoin: RinHash (BLAKE3 -> Argon2d -> SHA3-256), segwit + MimbleWimble enabled
-                coin = BTC::Coin::RIN;
+                // Yenten: RinHash (BLAKE3 -> Argon2d -> SHA3-256), segwit + MimbleWimble enabled
+                coin = BTC::Coin::YTN;
             } else if (res.isLTC) {
                 // Litecoin: SHA256d, segwit enabled
                 coin = BTC::Coin::LTC;

@@ -1,10 +1,10 @@
 {
-    "peer1.rincoin.net": {
+    "peer1.yenten.net": {
         "pruning": "-",
         "s": "50002",
         "version": "1.4"
     },
-    "peer2.rincoin.net": {
+    "peer2.yenten.net": {
         "pruning": "-",
         "s": "50002",
         "version": "1.4"

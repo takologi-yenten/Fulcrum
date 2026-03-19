@@ -1,4 +1,4 @@
-# Snyk (.snyk) policy file — Fulcrum-RIN
+# Snyk (.snyk) policy file — Fulcrum-YTN
 # https://docs.snyk.io/snyk-cli/test-for-vulnerabilities/the-.snyk-file
 version: v1.25.0
 
@@ -20,7 +20,7 @@ language-settings:
 # finding is not exploitable in this codebase.
 # ---------------------------------------------------------------------------
 ignore:
-  # RocksDB bundled static library — Fulcrum-RIN is a *server* daemon that
+  # RocksDB bundled static library — Fulcrum-YTN is a *server* daemon that
   # reads its own database files; it does not open attacker-controlled RDB
   # files.  RocksDB memory-corruption CVEs that require specially crafted
   # .sst files are not reachable via the Electrum-protocol attack surface.
@@ -40,7 +40,7 @@ ignore:
   # SNYK-UNMANAGED-SECP256K1-XXXXXXXX:
   #   - '*':
   #       reason: >
-  #         Fulcrum-RIN uses secp256k1 exclusively for public-key script
+  #         Fulcrum-YTN uses secp256k1 exclusively for public-key script
   #         validation.  No secret keys are held or generated at runtime.
 
 patch: {}

@@ -9,10 +9,10 @@
 
 ## Scope
 
-This policy covers **Fulcrum-RIN**, the Rincoin-enabled fork of the
+This policy covers **Fulcrum-YTN**, the Yenten-enabled fork of the
 [Fulcrum](https://github.com/cculianu/Fulcrum) Electrum-protocol server.
 Vulnerabilities in the upstream Fulcrum codebase that do **not** affect the
-Rincoin-specific additions should be reported upstream to
+Yenten-specific additions should be reported upstream to
 [cculianu/Fulcrum](https://github.com/cculianu/Fulcrum/security) first.
 
 ## Reporting a Vulnerability
@@ -39,7 +39,7 @@ heightened review requirements:
 | Subsystem | File(s) | Notes |
 |-----------|---------|-------|
 | Electrum RPC parsing | `src/RPC.cpp`, `src/Servers.cpp` | JSON-RPC from arbitrary clients |
-| Bitcoin node RPC client | `src/BitcoinD.cpp` | Responses from `rincoind` |
+| Bitcoin node RPC client | `src/BitcoinD.cpp` | Responses from `yentend` |
 | Block / tx deserialisation | `src/BTC.cpp`, `src/bitcoin/*.cpp` | Full consensus parsing |
 | RinHash (PoW) | `src/bitcoin/crypto/rinhash.cpp` | Argon2d + BLAKE3 + SHA3-256 |
 | Storage / RocksDB layer | `src/Storage.cpp` | DB key construction |

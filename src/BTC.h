@@ -45,7 +45,7 @@
 namespace BTC
 {
     /// Used by the Storage and Controller subsystem to figure out what coin we are on (BCH vs BTC vs LTC)
-    enum class Coin { Unknown = 0, BCH, BTC, LTC, RIN };
+    enum class Coin { Unknown = 0, BCH, BTC, LTC, YTN };
 
     QString coinToName(Coin);
     Coin coinFromName(const QString &);
@@ -190,7 +190,7 @@ namespace BTC
 
     /// Deserialize an 80-byte raw block header from a QByteArray and return its
     /// proof-of-work hash as a reversed (big-endian) QByteArray, using the
-    /// coin-specific algorithm (RinHash for RIN, SHA256d for everything else).
+    /// coin-specific algorithm (RinHash for YTN, SHA256d for everything else).
     /// This is the Electrum/Fulcrum "scripthash-style" hash: what the protocol
     /// calls the block hash.  Use this instead of repeating the verbose
     ///   BTC::Hash2ByteArrayRev(BTC::Deserialize<bitcoin::CBlockHeader>(hdr).GetHash())

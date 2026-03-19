@@ -19,8 +19,8 @@ uint256 CBlockHeader::GetHash() const {
     // Dispatch to the correct proof-of-work hash function for each supported coin.
     // Add a new branch here when adding support for a coin with a custom hash algorithm.
     const auto &unit = GetCurrencyUnit();
-    if (unit == "RIN") {
-        // Rincoin: BLAKE3 -> Argon2d -> SHA3-256
+    if (unit == "YTN") {
+        // Yenten: BLAKE3 -> Argon2d -> SHA3-256
         return RinHash(*this);
     } else if (unit == "BTC") {
         // Bitcoin Core / Bitcoin Knots: SHA256d

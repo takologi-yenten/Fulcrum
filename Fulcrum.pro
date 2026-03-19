@@ -40,7 +40,7 @@ versionAtLeast(QT_VERSION, 6.5.0) {
 CONFIG += console warn_on
 CONFIG -= app_bundle
 
-TARGET = fulcrum-rin
+TARGET = fulcrum-ytn
 
 versionAtMost(QT_VERSION, 5.15.1) {
     error("Fulcrum requires Qt 5.15.2 (or later) to be successfully built without errors.  Please use Qt 5.15.2+ to build this codebase.")

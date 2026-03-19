@@ -69,16 +69,16 @@ public:
     /// for debug printing when it receives new mempool tx's.
     static void printMempoolStatusToLog(size_t newSize, size_t numAddresses, double msec, bool useDebugLogger, bool force = false);
 
-    /// Thread-safe, lock-free, returns true for BTC, LTC, and RIN
+    /// Thread-safe, lock-free, returns true for BTC, LTC, and YTN
     bool isSegWitCoin() const {
         auto const c = coinType.load(std::memory_order_relaxed);
-        return c == BTC::Coin::BTC || c == BTC::Coin::LTC || c == BTC::Coin::RIN;
+        return c == BTC::Coin::BTC || c == BTC::Coin::LTC || c == BTC::Coin::YTN;
     }
 
-    /// Thread-safe, lock-free, returns true for LTC and RIN
+    /// Thread-safe, lock-free, returns true for LTC and YTN
     bool isMimbleWimbleCoin() const {
         auto const c = coinType.load(std::memory_order_relaxed);
-        return c == BTC::Coin::LTC || c == BTC::Coin::RIN;
+        return c == BTC::Coin::LTC || c == BTC::Coin::YTN;
     }
 
     /// Thread-safe, lock-free, returns true for BCH. Note: also returns true for "Unknown" coins since we "prefer" BCH

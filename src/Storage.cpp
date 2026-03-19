@@ -2752,7 +2752,7 @@ void Storage::loadCheckHeadersInDB()
                 throw DatabaseFormatError(QString("%1. Possible databaase corruption. Delete the datadir and resynch.").arg(err.isEmpty() ? "Could not read all headers" : err));
 
             auto [verif, lock] = headerVerifier();
-            // set genesis hash -- use GetHash() so RIN uses RinHash, not SHA256d
+            // set genesis hash -- use GetHash() so YTN uses RinHash, not SHA256d
             p->genesisHash = BTC::HeaderHash(hVec.front());
 
             err.clear();
@@ -3920,7 +3920,7 @@ void Storage::addBlock(PreProcessedBlockPtr ppb, bool saveUndo, unsigned nReserv
             appendHeader(batch, rawHeader, ppb->height);
 
             if (ppb->height == 0) [[unlikely]] {
-                // update genesis hash -- use GetHash() so RIN uses RinHash, not SHA256d
+                // update genesis hash -- use GetHash() so YTN uses RinHash, not SHA256d
                 p->genesisHash = BTC::HeaderHash(rawHeader); // guarded by p->headerVerifierLock
             }
 

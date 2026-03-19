@@ -1,12 +1,12 @@
-# Rincoin Electrum Fork Manual (Living Document)
+# Yenten Electrum Fork Manual (Living Document)
 
 Status: Draft v0 (created 2026-02-19)
 
 ## 1) Scope and goals
 
-This manual defines how to fork upstream Electrum into a Rincoin wallet that:
-- Connects to Rincoin Fulcrum servers (Electrum protocol)
-- Uses Rincoin network/address/serialization rules safely
+This manual defines how to fork upstream Electrum into a Yenten wallet that:
+- Connects to Yenten Fulcrum servers (Electrum protocol)
+- Uses Yenten network/address/serialization rules safely
 - Maintains high code quality and upstream compatibility discipline
 - Ships with reproducible tests and CI checks, including Snyk scans
 
@@ -27,9 +27,9 @@ Standards to follow:
 - Rebase/merge upstream regularly (document cadence)
 - Security checks mandatory in CI (SAST + dependency scans)
 
-## 3) Rincoin chain constants required for wallet fork
+## 3) Yenten chain constants required for wallet fork
 
-From Rincoin Core chainparams (to be revalidated before coding):
+From Yenten Core chainparams (to be revalidated before coding):
 - Mainnet P2PKH prefix: 60 (`R...`)
 - Mainnet P2SH prefix: 122 (`r...`)
 - Mainnet WIF prefix: 188
@@ -41,7 +41,7 @@ From Rincoin Core chainparams (to be revalidated before coding):
 - Regtest Bech32 HRP: `rrin`
 
 Electrum-specific values still needed before implementation:
-- Electrum server default TCP/SSL ports for Rincoin
+- Electrum server default TCP/SSL ports for Yenten
 - Genesis hash(es) to embed for server validation
 - Checkpoint strategy and source (Fulcrum / Core)
 - BIP44 coin type policy
@@ -52,7 +52,7 @@ Electrum-specific values still needed before implementation:
 ### Phase 0 — Workspace setup and baseline freeze
 Tasks:
 1. Clone upstream Electrum next to Fulcrum-rin.
-2. Create branch `rincoin-bootstrap` from chosen upstream tag.
+2. Create branch `yenten-bootstrap` from chosen upstream tag.
 3. Record exact upstream commit and toolchain versions.
 
 Test gate:
@@ -60,31 +60,31 @@ Test gate:
 
 ### Phase 1 — Coin parameter integration (minimal functional fork)
 Tasks:
-1. Duplicate/adapt network definitions for Rincoin mainnet/testnet/regtest.
+1. Duplicate/adapt network definitions for Yenten mainnet/testnet/regtest.
 2. Set prefixes, HRP, genesis, and protocol constants.
 3. Wire server list bootstrap (pointing initially to your local Fulcrum).
 4. Keep app name/icons unchanged temporarily to reduce risk.
 
 Test gate:
-- **PASSED** (`10375421e`) — `RincoinMainnet`/`Testnet`/`Regtest` registered; all params verified against `chainparams.cpp`; servers.json points to `127.0.0.1:50001`; 338 upstream tests pass.
+- **PASSED** (`10375421e`) — `YentenMainnet`/`Testnet`/`Regtest` registered; all params verified against `chainparams.cpp`; servers.json points to `127.0.0.1:50001`; 338 upstream tests pass.
 
 ### Phase 2 — Transaction and script correctness validation
 Tasks:
 1. Validate address parsing/encoding vectors for Base58 + Bech32.
 2. Validate script hash derivation compatibility with Fulcrum.
-3. Validate tx serialization/signing round-trips against Rincoin Core mempool acceptance.
+3. Validate tx serialization/signing round-trips against Yenten Core mempool acceptance.
 
 Test gate:
-- **PASSED** (`5e3a122`) — 35 tests / 45 subtests in `tests/test_rincoin_params.py`; coverage: network constants, P2PKH/P2SH/bech32 encoding, WIF round-trip, scripthash derivation, address-to-script structure, cross-network isolation.
+- **PASSED** (`5e3a122`) — 35 tests / 45 subtests in `tests/test_yenten_params.py`; coverage: network constants, P2PKH/P2SH/bech32 encoding, WIF round-trip, scripthash derivation, address-to-script structure, cross-network isolation.
 
 ### Phase 3 — Full test suite enablement
 Tasks:
 1. Run upstream unit tests; mark coin-specific expected deltas.
-2. Add Rincoin-specific tests (network constants, address vectors, script-hash vectors).
+2. Add Yenten-specific tests (network constants, address vectors, script-hash vectors).
 3. Add integration tests against ephemeral/local Fulcrum endpoint.
 
 Test gate:
-- **PASSED** (`99b0f249`) — 11 integration tests pass against live Fulcrum-RIN at `127.0.0.1:50001`; skip-on-unreachable guard in place for offline CI. Coverage: genesis hash, header bytes, chain tip height, scripthash P2PKH+P2WPKH accepted, `confirmed` balance zero.
+- **PASSED** (`99b0f249`) — 11 integration tests pass against live Fulcrum-YTN at `127.0.0.1:50001`; skip-on-unreachable guard in place for offline CI. Coverage: genesis hash, header bytes, chain tip height, scripthash P2PKH+P2WPKH accepted, `confirmed` balance zero.
 
 ### Phase 4 — Security hardening and Snyk readiness
 Tasks:
@@ -98,7 +98,7 @@ Test gate:
 
 ### Phase 5 — Branding and release engineering
 Tasks:
-1. Rename app/package identifiers to Rincoin wallet naming.
+1. Rename app/package identifiers to Yenten wallet naming.
 2. Replace assets/icons, desktop entry, metadata, and about text.
 3. Add deterministic build instructions and release-signing process.
 
@@ -119,7 +119,7 @@ Test gate:
 Minimum CI jobs:
 - Lint + format checks
 - Unit tests
-- Integration smoke against local Rincoin Fulcrum
+- Integration smoke against local Yenten Fulcrum
 - Dependency audit (`pip-audit`)
 - Snyk Open Source and Snyk Code
 - Build artifact smoke (run app help/version)
@@ -128,17 +128,17 @@ Minimum CI jobs:
 
 | Decision | Choice | Date |
 |---|---|---|
-| Wallet product name | **Electrum-RIN** | 2026-02-19 |
+| Wallet product name | **Electrum-YTN** | 2026-02-19 |
 | Phase 1 platforms | **Linux desktop + Windows desktop** | 2026-02-19 |
 | Default Electrum ports | **50001 (TCP) / 50002 (SSL)** | 2026-02-19 |
-| BIP44 derivation | **Placeholder `9555` (Rincoin p2p port) used during development — obvious sentinel that flags unregistered status in any wallet dump. MUST be replaced with SLIP-0044 registered value before first public release.** | 2026-02-19 |
-| xpub/xprv version bytes | **Reuse standard BTC bytes (0x0488B21E / 0x0488ADE4)** — already set in Rincoin Core chainparams | 2026-02-19 |
+| BIP44 derivation | **Placeholder `9555` (Yenten p2p port) used during development — obvious sentinel that flags unregistered status in any wallet dump. MUST be replaced with SLIP-0044 registered value before first public release.** | 2026-02-19 |
+| xpub/xprv version bytes | **Reuse standard BTC bytes (0x0488B21E / 0x0488ADE4)** — already set in Yenten Core chainparams | 2026-02-19 |
 
 ### BIP44 migration warning
 
-**Code reference:** `electrum/constants.py` — `AbstractNet.BIP44_COIN_TYPE` declaration and the `TODO(rincoin-phase1)` stub block for `RincoinMainnet`.
+**Code reference:** `electrum/constants.py` — `AbstractNet.BIP44_COIN_TYPE` declaration and the `TODO(yenten-phase1)` stub block for `YentenMainnet`.
 
-The placeholder value `9555` (Rincoin's p2p port) is intentionally conspicuous so that any wallet
+The placeholder value `9555` (Yenten's p2p port) is intentionally conspicuous so that any wallet
 file, seed dump, or log that shows the derivation path immediately reveals it is pre-registration:
 `m/44'/9555'/...` and `m/84'/9555'/...` are not used by any real SLIP-0044 entry, guaranteeing no
 overlap with existing coins during development.
@@ -153,14 +153,14 @@ After SLIP-0044 registration:
 
 1. Official server seed list and operator trust model
 2. Hardware-wallet support in phase 1: include or defer
-3. Rincoin SLIP-0044 coin type number (pending registration)
+3. Yenten SLIP-0044 coin type number (pending registration)
 
 ## 8) Change log for this manual
 
-- 2026-02-19: Initial draft created from upstream research and Rincoin chainparams extraction.
+- 2026-02-19: Initial draft created from upstream research and Yenten chainparams extraction.
 - 2026-02-19: Confirmed project decisions: name, platforms, ports, BIP44 policy.
 - 2026-02-19: Updated BIP44 placeholder from LTC coin type `2` to sentinel `9555`; added code reference.
-- 2026-02-19: **Phase 0 gate PASSED** — upstream Electrum 4.7.0 installed, 301 core tests pass on `rincoin-bootstrap` branch.
-- 2026-02-19: **Phase 1 gate PASSED** (`10375421e`) — `RincoinMainnet/Testnet/Regtest` classes + chains/ files committed. Genesis hash `000096bd…` confirmed via Fulcrum `server.features`. 338 tests pass.
+- 2026-02-19: **Phase 0 gate PASSED** — upstream Electrum 4.7.0 installed, 301 core tests pass on `yenten-bootstrap` branch.
+- 2026-02-19: **Phase 1 gate PASSED** (`10375421e`) — `YentenMainnet/Testnet/Regtest` classes + chains/ files committed. Genesis hash `000096bd…` confirmed via Fulcrum `server.features`. 338 tests pass.
 - 2026-02-19: **Phase 2 gate PASSED** (`5e3a122`) — 35 address/script/scripthash test vectors all green. P2PKH="R", P2SH="r", bech32="rin1", WIF=0xbc, scripthash matches Fulcrum convention, cross-network isolation verified.
 - 2026-02-19: **Phase 3 gate PASSED** (`99b0f249`) — 11 Fulcrum integration tests pass; genesis header bytes verified against live server; skip guard for offline CI.
