@@ -582,7 +582,7 @@ void DownloadBlocksTask::do_get(unsigned int bnum)
                     bool hashOk = false;
                     if (header.length() == HEADER_SIZE) {
                         try {
-                            // GetHash() dispatches on currency unit (YTN -> RinHash, others -> SHA256d).
+                            // GetHash() dispatches on currency unit (YTN -> Yenten PoW hash, others -> SHA256d).
                             // The unit is always set correctly before block download begins.
                             const auto cblockHeader = BTC::Deserialize<bitcoin::CBlockHeader>(header);
                             chkHash = BTC::Hash2ByteArrayRev(cblockHeader.GetHash());

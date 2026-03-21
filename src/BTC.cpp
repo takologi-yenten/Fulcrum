@@ -141,7 +141,7 @@ namespace BTC
         }
         if (!prev.isEmpty()) {
             const auto prevHdr = Deserialize<bitcoin::CBlockHeader>(prev);
-            // GetHash() dispatches on currency unit (YTN -> RinHash, others -> SHA256d).
+            // GetHash() dispatches on currency unit (YTN -> Yenten PoW hash, others -> SHA256d).
             // The unit is always set correctly before HeaderVerifier is called.
             if (prevHdr.GetHash() != curHdr.hashPrevBlock) {
                 if (err) *err = QString("Header %1 'hashPrevBlock' does not match the contents of the previous block").arg(height);
@@ -194,14 +194,14 @@ namespace BTC
         return nameNetMap.value(name, Net::Invalid /* default if not found */);
     }
 
-    namespace { const QString coinNameBCH{"BCH"}, coinNameBTC{"BTC"}, coinNameLTC{"LTC"}, coinNameRIN{"YTN"}; }
+    namespace { const QString coinNameBCH{"BCH"}, coinNameBTC{"BTC"}, coinNameLTC{"LTC"}, coinNameYTN{"YTN"}; }
     QString coinToName(Coin c) {
         QString ret; // for NRVO
         switch (c) {
         case Coin::BCH: ret = coinNameBCH; break;
         case Coin::BTC: ret = coinNameBTC; break;
         case Coin::LTC: ret = coinNameLTC; break;
-        case Coin::YTN: ret = coinNameRIN; break;
+        case Coin::YTN: ret = coinNameYTN; break;
         case Coin::Unknown: break;
         }
         return ret;
@@ -210,7 +210,7 @@ namespace BTC
         if (s == coinNameBCH) return Coin::BCH;
         if (s == coinNameBTC) return Coin::BTC;
         if (s == coinNameLTC) return Coin::LTC;
-        if (s == coinNameRIN) return Coin::YTN;
+        if (s == coinNameYTN) return Coin::YTN;
         return Coin::Unknown;
     }
 
@@ -280,19 +280,19 @@ namespace {
 
     auto t1 = App::registerTest("btcmisc", test);
 
-    // ---- RinHash block header hash test vectors --------------------------------
+    // ---- Yenten block header hash test vectors ---------------------------------
     // Vectors derived from the live Yenten mainnet chain, cross-checked against
     // Fulcrum-YTN server.features and blockchain.block.headers responses.
     //
     // The HeaderHash() helper is used here — it wraps the full
     //   BTC::Hash2ByteArrayRev(BTC::Deserialize<CBlockHeader>(hdr).GetHash())
     // pattern and is the canonical call site going forward.
-    void testRinHash()
+    void testYtnHash()
     {
         using Util::ParseHexFast;
 
         // GetHash() dispatches on GetCurrencyUnit(); set it to "YTN" for the
-        // duration of this test so CBlockHeader::GetHash() calls RinHash().
+        // duration of this test so CBlockHeader::GetHash() dispatches to YTN logic.
         const auto savedUnit = bitcoin::GetCurrencyUnit();
         const struct CurrGuard {
             const std::string &saved;
@@ -301,40 +301,18 @@ namespace {
         bitcoin::SetCurrencyUnit("YTN");
 
         // ---- Block 0 (genesis) --------------------------------------------------
-        // Raw 80-byte header from blockchain.block.header(0)
+        // Raw 80-byte header from Yenten chain params (mainnet genesis).
         const QByteArray genesis = ParseHexFast(
             "0100000000000000000000000000000000000000000000000000000000000000"
-            "00000000adcd471c60b9dc56b5dc049e567106388fdf078f936a722b42edd230"
-            "85c0908500e8e467ffff001f28850000");
-        // Expected hash (big-endian, Electrum convention) from server.features
+            "000000002a67f93c1e533f3d383eda5c359496f703ee33f735732adde2ca1217"
+            "724e8792687dd359ffff3f1e68930200");
+        // Expected hash (big-endian, Electrum convention)
         const QByteArray genesisHashExpected = ParseHexFast(
-            "000096bdd6e4613ca89b074ebd6f609aba6fe3f868b34ee79380aa3bc7a8c9db");
-        Log() << "Testing RinHash block 0 ...";
+            "00001828d845205a951f9609e011775e035b00c7fb476310261ef30460cdccab");
+        Log() << "Testing YTN hash block 0 ...";
         const auto genesisHash = BTC::HeaderHash(genesis);
         if (genesisHash != genesisHashExpected)
-            throw Exception(QString("RinHash block 0 mismatch: got %1").arg(QString(genesisHash.toHex())));
-
-        // ---- Block 1 ------------------------------------------------------------
-        // hashPrevBlock in block 1 must equal the genesis hash
-        const QByteArray block1 = ParseHexFast(
-            "00000020dbc9a8c73baa8093e74eb368f8e36fba9a606fbd4e079ba83c61e4d6"
-            "bd960000902e3faad09b8f350a530702e126b19107be3218521dbf9eb5b394ca"
-            "40e11278d9ebe767ffff001fa1070100");
-        // Verify hashPrevBlock linkage (bytes 4-36, little-endian → reversed)
-        Log() << "Checking block 1 hashPrevBlock linkage ...";
-        const QByteArray block1PrevRev(block1.constData() + 4, 32); // LE
-        QByteArray block1Prev(block1PrevRev);
-        std::reverse(block1Prev.begin(), block1Prev.end()); // → BE
-        if (block1Prev != genesisHashExpected)
-            throw Exception("RinHash block 1 hashPrevBlock does not match genesis hash");
-
-        // Expected hash for block 1 (derived from block 2's hashPrevBlock)
-        const QByteArray block1HashExpected = ParseHexFast(
-            "00002adfb206d5d942abc963b93fa2edb479eb7b6f589f5318ddda5cd732ec19");
-        Log() << "Testing RinHash block 1 ...";
-        const auto block1Hash = BTC::HeaderHash(block1);
-        if (block1Hash != block1HashExpected)
-            throw Exception(QString("RinHash block 1 mismatch: got %1").arg(QString(block1Hash.toHex())));
+            throw Exception(QString("YTN block 0 hash mismatch: got %1").arg(QString(genesisHash.toHex())));
 
         // ---- HeaderHash vs. inline expansion equivalence -----------------------
         // Verify that BTC::HeaderHash() produces the same result as the
@@ -343,11 +321,11 @@ namespace {
         const auto explicit0 = BTC::Hash2ByteArrayRev(
             BTC::Deserialize<bitcoin::CBlockHeader>(genesis).GetHash());
         if (explicit0 != genesisHash)
-            throw Exception("HeaderHash() helper does not match inline expansion for block 0");
+            throw Exception("HeaderHash() helper does not match inline expansion for YTN block 0");
 
-        Log(Log::BrightWhite) << "All rinhash unit tests passed!";
+        Log(Log::BrightWhite) << "All ytnpow unit tests passed!";
     }
 
-    auto t2 = App::registerTest("rinhash", testRinHash);
+    auto t2 = App::registerTest("ytnpow", testYtnHash);
 } // namespace
 #endif

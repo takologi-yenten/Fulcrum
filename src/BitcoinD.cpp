@@ -201,7 +201,7 @@ BitcoinD *BitcoinDMgr::getBitcoinD()
 
 namespace {
     struct BitcoinDVersionParseResult {
-        bool isBchd{}, isCore{}, isBU{}, isBCHN{}, isLTC{}, isRIN{}, isFlowee{};
+        bool isBchd{}, isCore{}, isBU{}, isBCHN{}, isLTC{}, isYTN{}, isFlowee{};
         Version version;
 
         constexpr BitcoinDVersionParseResult() noexcept = default;
@@ -232,8 +232,8 @@ namespace {
             isCore = subversion.startsWith("/Satoshi:"); // this matches Bitcoin Knots as well
             isBU = subversion.startsWith("/BCH Unlimited:");
             isBCHN = subversion.startsWith("/Bitcoin Cash Node:");
-            isRIN = subversion.startsWith("/YentenCore:");
-            isLTC = subversion.startsWith("/LitecoinCore:"); // do NOT include isRIN here; Yenten is tracked independently
+            isYTN = subversion.startsWith("/YentenCore:");
+            isLTC = subversion.startsWith("/LitecoinCore:"); // do NOT include isYTN here; Yenten is tracked independently
             isFlowee = subversion.startsWith("/Flowee:");
             // regular bitcoind, "version" is reliable and always the same format
             version = Version::BitcoinDCompact(val);
@@ -250,7 +250,7 @@ namespace {
         // at the time of this writing, released BU is 1.9.0 and it definitely lacks the dsproof RPC
         if (isBU && version < Version{1, 9, 1})
             return true;
-        if (isCore || isLTC || isRIN) // core, ltc, and rin will definitely never add this feature
+        if (isCore || isLTC || isYTN) // core, ltc, and ytn will definitely never add this feature
             return true;
         // for all other remote daemons, return false so that calling code will probe.
         return false;
@@ -286,8 +286,8 @@ void BitcoinDMgr::refreshBitcoinDNetworkInfo()
                 }(bitcoinDInfo.subversion, networkInfo);
                 // assign to shared object now from stack object BitcoinDVersionParseResult
                  std::tie(bitcoinDInfo.isBchd, bitcoinDInfo.isCore, bitcoinDInfo.isBU, bitcoinDInfo.isLTC,
-                        bitcoinDInfo.isRIN, bitcoinDInfo.isFlowee, bitcoinDInfo.version)
-                    = std::tie(res.isBchd, res.isCore, res.isBU, res.isLTC, res.isRIN, res.isFlowee, res.version);
+                        bitcoinDInfo.isYTN, bitcoinDInfo.isFlowee, bitcoinDInfo.version)
+                    = std::tie(res.isBchd, res.isCore, res.isBU, res.isLTC, res.isYTN, res.isFlowee, res.version);
                 bitcoinDInfo.relayFee = networkInfo.value("relayfee", 0.0).toDouble();
                 bitcoinDInfo.warnings = networkInfo.value("warnings", "").toString();
                 // set quirk flags: requires 0 arg `estimatefee`?
@@ -303,9 +303,9 @@ void BitcoinDMgr::refreshBitcoinDNetworkInfo()
                 };
                 // Set up RpcSupportInfo
                 auto & rsi = bitcoinDInfo.rpcSupportInfo;
-                rsi.isZeroArgEstimateFee = !res.isCore && !res.isLTC && !res.isRIN && isZeroArgEstimateFee(bitcoinDInfo.version, bitcoinDInfo.subversion);
-                rsi.hasEstimateSmartFee = (res.isCore || res.isLTC || res.isRIN) && bitcoinDInfo.version >= Version{0, 15, 0};
-                rsi.isTwoArgEstimateSmartFee = (res.isCore && bitcoinDInfo.version >= Version{0, 16, 0}) || (res.isLTC && bitcoinDInfo.version >= Version{0, 15, 0}) || (res.isRIN && bitcoinDInfo.version >= Version{0, 16, 0});
+                rsi.isZeroArgEstimateFee = !res.isCore && !res.isLTC && !res.isYTN && isZeroArgEstimateFee(bitcoinDInfo.version, bitcoinDInfo.subversion);
+                rsi.hasEstimateSmartFee = (res.isCore || res.isLTC || res.isYTN) && bitcoinDInfo.version >= Version{0, 15, 0};
+                rsi.isTwoArgEstimateSmartFee = (res.isCore && bitcoinDInfo.version >= Version{0, 16, 0}) || (res.isLTC && bitcoinDInfo.version >= Version{0, 15, 0}) || (res.isYTN && bitcoinDInfo.version >= Version{0, 16, 0});
                 // Implementations known to lack `getzmqnotifications`:
                 // - bchd (all versions)
                 // - BU before version 1.9.1.0
@@ -333,8 +333,8 @@ void BitcoinDMgr::refreshBitcoinDNetworkInfo()
             if (res.isCore) {
                 // Bitcoin Core / Bitcoin Knots: SHA256d, segwit enabled
                 coin = BTC::Coin::BTC;
-            } else if (res.isRIN) {
-                // Yenten: RinHash (BLAKE3 -> Argon2d -> SHA3-256), segwit + MimbleWimble enabled
+            } else if (res.isYTN) {
+                // Yenten: custom PoW hash dispatch, segwit + MimbleWimble enabled
                 coin = BTC::Coin::YTN;
             } else if (res.isLTC) {
                 // Litecoin: SHA256d, segwit enabled
@@ -1092,7 +1092,7 @@ QVariantMap BitcoinDInfo::toVariantMap() const
     ret["hasSubmitPackageRPC"] = rpcSupportInfo.hasSubmitPackageRPC;
     ret["isCore"] = isCore;
     ret["isLTC"] = isLTC;
-    ret["isRIN"] = isRIN;
+    ret["isYTN"] = isYTN;
     ret["isBU"] = isBU;
     ret["isFlowee"] = isFlowee;
     ret["isBchd"] = isBchd;

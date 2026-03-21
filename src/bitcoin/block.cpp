@@ -8,7 +8,7 @@
 #include "amount.h"
 
 #include "crypto/common.h"
-#include "crypto/rinhash.h"
+#include "crypto/ytnpow.h"
 #include "hash.h"
 #include "tinyformat.h"
 #include "utilstrencodings.h"
@@ -20,8 +20,9 @@ uint256 CBlockHeader::GetHash() const {
     // Add a new branch here when adding support for a coin with a custom hash algorithm.
     const auto &unit = GetCurrencyUnit();
     if (unit == "YTN") {
-        // Yenten: BLAKE3 -> Argon2d -> SHA3-256
-        return RinHash(*this);
+        // Yenten: YesPower historically, SHA256d after the upstream cutoff timestamp.
+        // The exact transition logic is encapsulated in YtnPoWHash().
+        return YtnPoWHash(*this);
     } else if (unit == "BTC") {
         // Bitcoin Core / Bitcoin Knots: SHA256d
         return SerializeHash(*this);

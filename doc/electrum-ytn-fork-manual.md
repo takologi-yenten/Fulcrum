@@ -51,7 +51,7 @@ Electrum-specific values still needed before implementation:
 
 ### Phase 0 — Workspace setup and baseline freeze
 Tasks:
-1. Clone upstream Electrum next to Fulcrum-rin.
+1. Clone upstream Electrum next to Fulcrum-ytn.
 2. Create branch `yenten-bootstrap` from chosen upstream tag.
 3. Record exact upstream commit and toolchain versions.
 

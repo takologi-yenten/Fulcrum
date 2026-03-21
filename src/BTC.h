@@ -190,7 +190,7 @@ namespace BTC
 
     /// Deserialize an 80-byte raw block header from a QByteArray and return its
     /// proof-of-work hash as a reversed (big-endian) QByteArray, using the
-    /// coin-specific algorithm (RinHash for YTN, SHA256d for everything else).
+    /// coin-specific algorithm (Yenten PoW hash for YTN, SHA256d for everything else).
     /// This is the Electrum/Fulcrum "scripthash-style" hash: what the protocol
     /// calls the block hash.  Use this instead of repeating the verbose
     ///   BTC::Hash2ByteArrayRev(BTC::Deserialize<bitcoin::CBlockHeader>(hdr).GetHash())

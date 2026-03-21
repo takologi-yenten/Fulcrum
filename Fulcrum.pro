@@ -479,12 +479,16 @@ SOURCES += \
     bitcoin/crypto/hmac_sha256.cpp \
     bitcoin/crypto/hmac_sha512.cpp \
     bitcoin/crypto/rinhash.cpp \
+    bitcoin/crypto/ytnpow.cpp \
     bitcoin/crypto/ripemd160.cpp \
     bitcoin/crypto/sha3.cpp \
     bitcoin/crypto/sha1.cpp \
     bitcoin/crypto/sha256.cpp \
     bitcoin/crypto/sha256_sse4.cpp \
     bitcoin/crypto/sha512.cpp \
+    bitcoin/crypto/yespower/yespower_sha256.c \
+    bitcoin/crypto/yespower/yespower-opt.c \
+    bitcoin/crypto/yespower/yespower.c \
     bitcoin/crypto/blake3/blake3.c \
     bitcoin/crypto/blake3/blake3_dispatch.c \
     bitcoin/crypto/blake3/blake3_portable.c \
@@ -519,11 +523,17 @@ HEADERS += \
     bitcoin/crypto/hmac_sha256.h \
     bitcoin/crypto/hmac_sha512.h \
     bitcoin/crypto/rinhash.h \
+    bitcoin/crypto/ytnpow.h \
     bitcoin/crypto/ripemd160.h \
     bitcoin/crypto/sha3.h \
     bitcoin/crypto/sha1.h \
     bitcoin/crypto/sha256.h \
     bitcoin/crypto/sha512.h \
+    bitcoin/crypto/yespower/insecure_memzero.h \
+    bitcoin/crypto/yespower/sha256.h \
+    bitcoin/crypto/yespower/sysendian.h \
+    bitcoin/crypto/yespower/yespower.h \
+    bitcoin/crypto/yespower/yespower-platform.c \
     bitcoin/crypto/blake3/blake3.h \
     bitcoin/crypto/blake3/blake3_impl.h \
     bitcoin/hash.h \
