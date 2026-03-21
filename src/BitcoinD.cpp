@@ -232,7 +232,7 @@ namespace {
             isCore = subversion.startsWith("/Satoshi:"); // this matches Bitcoin Knots as well
             isBU = subversion.startsWith("/BCH Unlimited:");
             isBCHN = subversion.startsWith("/Bitcoin Cash Node:");
-            isYTN = subversion.startsWith("/YentenCore:");
+            isYTN = subversion.startsWith("/YentenCore:") || subversion.startsWith("/Yenten:");
             isLTC = subversion.startsWith("/LitecoinCore:"); // do NOT include isYTN here; Yenten is tracked independently
             isFlowee = subversion.startsWith("/Flowee:");
             // regular bitcoind, "version" is reliable and always the same format
