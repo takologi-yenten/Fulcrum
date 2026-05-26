@@ -18,6 +18,27 @@ corresponding Fulcrum-YTN build.
 
 ---
 
+## 2.1.1-ytn.3 — 2026-05-26
+
+Upstream baseline: Fulcrum **2.1.1** (unchanged from `2.1.1-ytn.2`).
+
+### Fork-side changes
+
+- `README.md`: ported the YTN-flavored material from the sister
+  Fulcrum-RIN fork. Specifically:
+  - PoW intro now names the actual algorithm
+    (YesPower 0.5 → YesPower 1.0 → SHA256d, cutovers handled
+    transparently) instead of the vague "Yenten-compatible".
+  - Compiler / Qt note now states the release build matrix
+    (`Qt 5.15.8`, gcc 12.2.0) instead of upstream's "I use 6.10.0 myself".
+  - Donations section replaced with the two-block layout used by
+    Fulcrum-RIN (fork donations on top, upstream donations below)
+    with addresses and image paths rewritten for YTN/Yenten.
+
+No code, on-disk format, or wire-protocol changes.
+
+---
+
 ## 2.1.1-ytn.2 — 2026-05-26
 
 Upstream baseline: Fulcrum **2.1.1** (unchanged from `2.1.1-ytn.1`).

@@ -2,7 +2,9 @@
 
 > **This is [Fulcrum-YTN](https://github.com/takologi-yenten/Fulcrum)** — a fork of
 > [Fulcrum](https://github.com/cculianu/Fulcrum) with added support for
-> **Yenten (YTN)**, including Yenten-compatible proof-of-work hash handling.
+> **Yenten (YTN)**, including the Yenten proof-of-work algorithm
+> (YesPower 0.5 → YesPower 1.0 → SHA256d, with the historical cutovers
+> handled transparently).
 
 A fast & nimble SPV server for Bitcoin Cash, Bitcoin BTC, Litecoin, and **Yenten (YTN)**.
 
@@ -43,7 +45,7 @@ GPLv3. See the included `LICENSE.txt` file or [visit gnu.org and read the licens
     - *Optional*: For best results, enable zmq for the "hasblock" topic using e.g. `zmqpubhashblock=tcp://0.0.0.0:8433` in your `bitcoin.conf` file (zmq is only available on: Core, BCHN, BU 1.9.1+, or Litecoin Core).
   - *Recommended hardware*: Minimum 1GB RAM, 64-bit CPU, ~40GB disk space for mainnet BCH, 133GB for BTC (as of Aug 2023). For best results, use an SSD rather than an HDD.
 - *For compiling*: 
-  - `Qt Core` & `Qt Networking` libraries `5.15.2` or above (I use `6.10.0` myself).  Qt `5.15.1` (or earlier) is not supported.
+  - `Qt Core` & `Qt Networking` libraries `5.15.2` or above (Fulcrum-YTN release builds use `Qt 5.15.8`; upstream tests with `6.10.0`).  Qt `5.15.1` (or earlier) is not supported.
   - *Optional but recommended*:
     - `libzmq 4.x` development headers and library (also known as `libzmq3-dev` on Debian/Ubuntu and `zeromq-devel` on Fedora). Fulcrum will run just fine without linking against `libzmq`, but it will run better if you do link against `libzmq` and also turn on `zmqpubhashblock` notifications in `bitcoind` (zmq is only available on: Core, BCHN, or BU 1.9.1+).
     - `libminiupnpc 2.x/3.x` development headers and library (also known as `libminiupnpc-dev` on Debuan/Ubuntu and `miniupnpc-devel` on Fedora). Fulcrum will run just fine without this library, but it is needed if you want Fulcrum to use UPnP to open up firewall ports on your router (CLI arg: `--upnp`, conf var: `upnp=true`).
@@ -294,27 +296,32 @@ Everything should just work (I use MacOS as my dev machine).
 
 ---
 
-### Donations
+## Donations - Fulcrum-YTN
+
+#### If you like the Yenten implementation, let me buy a coffee by sending **BTC** here
+
+**[![bitcoin:BC1QEMEP8YDPCCVE2UN6VDN0MKNNQGFPQHMTW0LKWP](https://raw.githubusercontent.com/takologi-yenten/Fulcrum/master/doc/img/Fulcrum-YTN_donate.png)](bitcoin:BC1QEMEP8YDPCCVE2UN6VDN0MKNNQGFPQHMTW0LKWP)
+
+I'm not doing this for money. But there's always lack of coffee ;-)
+
+### Sponsors - Yenten
+* none so far ...
+
+
+
+## Donations - Fulcrum upstream
 
 #### Sure!  Send **BCH** here:
-
 **`bitcoincash:qphax4s4n9h60jxj2fkrjs35w2tvgd4wzvf52cgtzc`**
 
-[![bitcoincash:qphax4s4n9h60jxj2fkrjs35w2tvgd4wzvf52cgtzc](https://raw.githubusercontent.com/cculianu/DonateSpareChange/master/donate.png)](bitcoincash:qphax4s4n9h60jxj2fkrjs35w2tvgd4wzvf52cgtzc)
-
 ### Or, for anonymity you can donate to this **BCH RPA address**: 
-
 **`paycode:qygqyce24f7n6q2u36r8t332z5426ul78v7z0ynl6v9wlmk9tt28adksqgc0fzge8fk6ux8cj9tjvp8mkakvfzkgwqzj5h4n9tnfcpscsn7wxqqqqqqqzzmxze04`**
 
-[![paycode:qygqyce24f7n6q2u36r8t332z5426ul78v7z0ynl6v9wlmk9tt28adksqgc0fzge8fk6ux8cj9tjvp8mkakvfzkgwqzj5h4n9tnfcpscsn7wxqqqqqqqzzmxze04](https://c3-soft.com/downloads/Bitcoin/imgs/fulcrum_donation_paycode_2.png)](paycode:qygqyce24f7n6q2u36r8t332z5426ul78v7z0ynl6v9wlmk9tt28adksqgc0fzge8fk6ux8cj9tjvp8mkakvfzkgwqzj5h4n9tnfcpscsn7wxqqqqqqqzzmxze04)
-
 ### You may also send **BTC**:
-
 This is the BTC-equivalent of the above BCH address, which is: **`1BCHBCH6TXBaXyc5HReLBm1sNytBF2kkPD`**
-[![1BCHBCH6TXBaXyc5HReLBm1sNytBF2kkPD](https://c3-soft.com/downloads/Bitcoin/imgs/btc_address_qrcode_1.png)](1BCHBCH6TXBaXyc5HReLBm1sNytBF2kkPD)
 
 ---
 
-### Sponsors
+### Sponsors - Fulcrum upstream
 
 ![General Protocols](https://c3-soft.com/imgs/general-protocols.png)
