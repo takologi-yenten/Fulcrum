@@ -302,9 +302,10 @@ namespace {
 
         // ---- Block 0 (genesis) --------------------------------------------------
         // Raw 80-byte header from Yenten chain params (mainnet genesis).
+        // Verified against live yentend `getblockheader <genesis> false`.
         const QByteArray genesis = ParseHexFast(
             "0100000000000000000000000000000000000000000000000000000000000000"
-            "000000002a67f93c1e533f3d383eda5c359496f703ee33f735732adde2ca1217"
+            "000000002a67f93c1e533f3d383eda5c359496f703ee33f735732adeed2ca121"
             "724e8792687dd359ffff3f1e68930200");
         // Expected hash (big-endian, Electrum convention)
         const QByteArray genesisHashExpected = ParseHexFast(

@@ -18,6 +18,25 @@ corresponding Fulcrum-YTN build.
 
 ---
 
+## 2.1.1-ytn.2 — 2026-05-26
+
+Upstream baseline: Fulcrum **2.1.1** (unchanged from `2.1.1-ytn.1`).
+
+### Fork-side changes
+
+- `src/BTC.cpp`: corrected merkle-root bytes 23–27 of the genesis test
+  vector used by the `ytnpow` self-test. The previous vector
+  (introduced in `177f982`) contained a typo and produced a spurious
+  hash mismatch. Verified against live `yentend` via
+  `yenten-cli getblockheader <genesis> false`. The `YtnPoWHash`
+  implementation itself was already correct; only the embedded test
+  vector was wrong.
+
+`./fulcrum-ytn --test ytnpow` (built with `DEFINES+=ENABLE_TESTS`) now
+reports **All ytnpow unit tests passed!**.
+
+---
+
 ## 2.1.1-ytn.1 — 2026-05-26
 
 Upstream baseline: Fulcrum **2.1.1** (commit `4b38a75`, tag `v2.1.1`).
