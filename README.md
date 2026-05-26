@@ -47,7 +47,45 @@ GPLv3. See the included `LICENSE.txt` file or [visit gnu.org and read the licens
   - *Optional but recommended*:
     - `libzmq 4.x` development headers and library (also known as `libzmq3-dev` on Debian/Ubuntu and `zeromq-devel` on Fedora). Fulcrum will run just fine without linking against `libzmq`, but it will run better if you do link against `libzmq` and also turn on `zmqpubhashblock` notifications in `bitcoind` (zmq is only available on: Core, BCHN, or BU 1.9.1+).
     - `libminiupnpc 2.x/3.x` development headers and library (also known as `libminiupnpc-dev` on Debuan/Ubuntu and `miniupnpc-devel` on Fedora). Fulcrum will run just fine without this library, but it is needed if you want Fulcrum to use UPnP to open up firewall ports on your router (CLI arg: `--upnp`, conf var: `upnp=true`).
-  - A modern, 64-bit `C++20` compiler.  `clang-17` or `g++-13` are recommended. MSVC on Windows is not supported (please use `MinGW G++` instead, which ships with Qt Open Source Edition for Windows).
+  - A modern, 64-bit `C++20` compiler.  `clang-17` or `g++-13` are recommended (Fulcrum-YTN release builds use `gcc 12.2.0`, which also works). MSVC on Windows is not supported (please use `MinGW G++` instead, which ships with Qt Open Source Edition for Windows).
+
+### Runtime dependencies (dynamically-linked builds)
+
+The binaries built by Fulcrum-YTN's native Linux build script (`qmake && make`)
+are **dynamically linked** against system Qt, libzmq and OpenSSL. If you
+copy the binary to another host, install these system packages first.
+Skip this section if you use a fully-static binary from the [releases
+page](https://github.com/takologi-yenten/Fulcrum/releases) — those bundle Qt,
+rocksdb, jemalloc and friends and only need glibc.
+
+**Debian / Ubuntu** (Debian 12/13, Ubuntu 22.04/24.04):
+
+```bash
+sudo apt-get update
+sudo apt-get install -y \
+    libqt5network5 libqt5core5a \
+    libzmq5 \
+    libbz2-1.0 zlib1g
+```
+
+- All transitive crypto / TLS dependencies (`libssl`, `libcrypto`, `libsodium`, `libgssapi-krb5`, `libicu`, etc.) are pulled in automatically as dependencies of `libqt5network5` and `libzmq5`.
+- `libargon2` is **statically linked** into `fulcrum-ytn`, so no runtime package is needed for it.
+- If you also want UPnP, add `libminiupnpc17` (or whatever your distro names the runtime soname of libminiupnpc).
+- On Debian 13 Qt 5 is no longer the default toolkit but the `libqt5*` packages remain installable from the main archive.
+
+**Fedora / RHEL / Rocky / Alma**:
+
+```bash
+sudo dnf install -y qt5-qtbase qt5-qtnetworking zeromq bzip2-libs zlib
+```
+
+**Diagnose missing libraries on the target host**:
+
+```bash
+ldd ./fulcrum-ytn | grep -E "not found|=>"
+```
+
+Anything reporting `not found` is a missing package on that machine.
 
 ### Quickstart
 
@@ -65,9 +103,11 @@ bitcoind  = 127.0.0.1:9982   # yentend default RPC port
 rpcuser   = ytnuser
 rpcpassword = your_rpcpassword
 coin      = YTN
-tcp       = 0.0.0.0:50001
+#tcp       = 0.0.0.0:50001  # insecure - not recommended to open
 ssl       = 0.0.0.0:50002
-cert      = /etc/fulcrum-ytn/server-cert.pem
+#ws        = 0.0.0.0:50003  # insecure - not recommended to open
+wss       = 0.0.0.0:50004
+cert      = /etc/fulcrum-ytn/server-cert.pem  # get real SSL certs, e.g. from Letsencrypt
 key       = /etc/fulcrum-ytn/server-key.pem
 ```
 
@@ -91,7 +131,7 @@ You may also build from the CLI (on Linux and MacOS):
 2. `qmake` (to generate the Makefile)
 3. `make -j8`  (replace 8 here with the number of cores on your machine)
 
-**A note for Linux users**: You may have to install the Qt5 or Qt6 networking package separately such as `libqt5network5` or `libqt6network6` (depending on your distribution). You also need `libbz2-dev` otherwise compilation will fail. If you are having trouble finding the required Qt versions, you can try this link: https://launchpad.net/~beineri (for Ubuntu/Debian ppas). For best results, you may wish to also ensure you have the following installed: `pkg-config`, `libzmq` (aka `libzmq3-dev` on Debian/Ubuntu, `zeromq-devel` on Fedora), and `libminiupnpc` (aka `libminiupnpc-dev` on Debian/Ubuntu, `miniupnpc-devel` on Fedora).
+**A note for Linux users**: You may have to install the Qt5 or Qt6 networking package separately such as `libqt5network5` or `libqt6network6` (depending on your distribution). You also need `libbz2-dev` and `libargon2-dev` otherwise compilation will fail. If you are having trouble finding the required Qt versions, you can try this link: https://launchpad.net/~beineri (for Ubuntu/Debian ppas). For best results, you may wish to also ensure you have the following installed: `pkg-config`, `libzmq` (aka `libzmq3-dev` on Debian/Ubuntu, `zeromq-devel` on Fedora), and `libminiupnpc` (aka `libminiupnpc-dev` on Debian/Ubuntu, `miniupnpc-devel` on Fedora).
 
 **A note for Windows users**: `Qt 5.15.2` (or above) with `MinGW G++ 11.x.x` (or above) is the compiler/Qt kit you should be using.  MSVC is not supported by this codebase at the present time.
 
