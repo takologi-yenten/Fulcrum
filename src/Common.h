@@ -59,7 +59,11 @@ struct BadArgs : Exception { using Exception::Exception; ~BadArgs() override; };
 /// Fork identifier appended to the admin banner and startup log.
 /// Keeps APPNAME unchanged so Electrum protocol strings stay compatible.
 #define FORK_NAME "Fulcrum-YTN"
-#define VERSION "2.1.0"
+#define VERSION "2.1.1-ytn.1"
+/// Upstream Fulcrum baseline this build is rebased on. Exposed in the
+/// banner ("Fulcrum-YTN <fork-version> (Fulcrum <upstream-version>)") so
+/// downstream wallets can map any upstream CVE to a Fulcrum-YTN build.
+#define UPSTREAM_VERSION "2.1.1"
 #ifdef QT_DEBUG
 inline constexpr bool isReleaseBuild() { return false; }
 #else
@@ -79,7 +83,7 @@ inline constexpr bool isReleaseBuild() { return true; }
 #  endif
 #endif
 
-#ifdef QT_OS_WIN
+#ifdef Q_OS_WIN
 inline constexpr bool isWindows() { return true; }
 #else
 inline constexpr bool isWindows() { return false; }
